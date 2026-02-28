@@ -1,18 +1,58 @@
-# React + Vite
+# Consulta de Clima (OpenWeather + React)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplicação web feita com React + Vite para consultar o clima atual de uma cidade e exibir chance de chuva por hora.
 
-Currently, two official plugins are available:
+## Pré-requisitos
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- [Node.js](https://nodejs.org/) (recomendado: versão LTS)
+- npm (já vem com o Node.js)
+- Conta no [OpenWeather](https://openweathermap.org/) para gerar a API key
 
-## React Compiler
+## 1) Como criar conta no OpenWeather e gerar a chave
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+1. Acesse [https://openweathermap.org/](https://openweathermap.org/) e clique em **Sign In** / **Create Account**.
+2. Crie sua conta com e-mail e senha.
+3. Confirme o e-mail (se solicitado).
+4. Faça login e acesse sua área de API keys (normalmente em **My API keys**).
+5. Copie a chave gerada (API key).
 
-Note: This will impact Vite dev & build performances.
+> Observação: em contas novas, a chave pode levar alguns minutos para ativar.
 
-## Expanding the ESLint configuration
+## 2) Como instalar o projeto
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+No terminal, na pasta do projeto:
+
+```bash
+npm install
+```
+
+## 3) Como configurar a chave da API
+
+Crie um arquivo chamado `.env` na raiz do projeto com o conteúdo:
+
+```env
+VITE_OPENWEATHER_API_KEY=sua_chave_aqui
+```
+
+Troque `sua_chave_aqui` pela chave copiada no OpenWeather.
+
+## 4) Como rodar em ambiente de desenvolvimento
+
+```bash
+npm run dev
+```
+
+Depois, abra a URL exibida no terminal (geralmente `http://localhost:5173`).
+
+## Scripts disponíveis
+
+- `npm run dev`: inicia o servidor de desenvolvimento
+- `npm run build`: gera build de produção
+- `npm run preview`: visualiza o build localmente
+- `npm run lint`: executa o lint com ESLint
+
+## Possíveis erros comuns
+
+- **"Chave da API não encontrada"**: verifique se o arquivo `.env` existe e se a variável está como `VITE_OPENWEATHER_API_KEY`.
+- **"API key inválida ou ainda não ativada"**: confira se copiou a chave correta e aguarde alguns minutos após criar a conta.
+- **Cidade não encontrada**: confirme se o nome da cidade foi digitado corretamente.
