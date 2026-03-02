@@ -1,8 +1,13 @@
 import { NavLink, Navigate, Route, Routes } from 'react-router-dom'
 import './App.css'
-import AboutPage from './pages/AboutPage.jsx'
-import ForecastPage from './pages/ForecastPage.jsx'
-import WeatherPage from './pages/WeatherPage.jsx'
+
+// Pages (telas) do app:
+// - TelaClima: tela principal (Home) para consultar o clima atual e chance de chuva por hora.
+// - PrevProximosDias: tela de previsão diária (ex.: próximos 7/16 dias) para a cidade pesquisada.
+// - TelaSobre: tela informativa explicando o projeto, APIs usadas e rotas.
+import TelaSobre from './pages/AboutPage.jsx'
+import PrevProximosDias from './pages/ForecastPage.jsx'
+import TelaClima from './pages/WeatherPage.jsx'
 
 export default function App() {
   const getNavLinkClassName = ({ isActive }) =>
@@ -23,9 +28,16 @@ export default function App() {
       </nav>
 
       <Routes>
-        <Route path="/" element={<WeatherPage />} />
-        <Route path="/previsao" element={<ForecastPage />} />
-        <Route path="/sobre" element={<AboutPage />} />
+        {/* / = Home (consulta de clima) */}
+        <Route path="/" element={<TelaClima />} />
+
+        {/* /previsao = Previsão diária */}
+        <Route path="/previsao" element={<PrevProximosDias />} />
+
+        {/* /sobre = Informações do projeto */}
+        <Route path="/sobre" element={<TelaSobre />} />
+
+        {/* Qualquer rota desconhecida volta para a Home */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </>

@@ -1,4 +1,4 @@
-export default function AboutPage() {
+export default function TelaSobre() {
   return (
     <main className="weather-app">
       <h1>Sobre</h1>

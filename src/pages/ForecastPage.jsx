@@ -1,109 +1,110 @@
 import { useMemo, useState } from 'react'
 
-function formatDayLabel(isoDate) {
-  const date = new Date(`${isoDate}T00:00:00`)
-  return date.toLocaleDateString('pt-BR', {
+function formatarDia(isoDate) {
+  const data = new Date(`${isoDate}T00:00:00`)
+  return data.toLocaleDateString('pt-BR', {
     weekday: 'short',
     day: '2-digit',
     month: '2-digit',
   })
 }
 
-export default function ForecastPage() {
-  const [city, setCity] = useState('São Paulo')
-  const [days, setDays] = useState(7)
-  const [forecast, setForecast] = useState(null)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
+export default function PrevProximosDias() {
+  const [cidade, setCidade] = useState('São Paulo')
+  const [dias, setDias] = useState(7)
+  const [previsao, setPrevisao] = useState(null)
+  const [carregando, setCarregando] = useState(false)
+  const [erro, setErro] = useState('')
 
-  const resolvedDays = useMemo(() => {
+  const diasResolvidos = useMemo(() => {
     // Open-Meteo (endpoint gratuito) normalmente oferece até 16 dias de previsão.
     // Mantendo 7 como padrão; se o usuário pedir 30, a gente limita ao máximo suportado.
-    const numericDays = Number(days)
-    if (!Number.isFinite(numericDays)) return 7
-    return Math.min(Math.max(Math.trunc(numericDays), 1), 16)
-  }, [days])
+    const diasNumericos = Number(dias)
+    if (!Number.isFinite(diasNumericos)) return 7
+    return Math.min(Math.max(Math.trunc(diasNumericos), 1), 16)
+  }, [dias])
 
-  async function handleSearch(event) {
+  async function buscarPrevisao(event) {
     event.preventDefault()
 
-    const trimmedCity = city.trim()
+    const nomeCidade = cidade.trim()
 
-    if (!trimmedCity) {
-      setError('Digite o nome de uma cidade.')
-      setForecast(null)
+    if (!nomeCidade) {
+      setErro('Digite o nome de uma cidade.')
+      setPrevisao(null)
       return
     }
 
     const apiKey = (import.meta.env.VITE_OPENWEATHER_API_KEY || '').trim()
 
     if (!apiKey) {
-      setError('Chave da API não encontrada. Crie a variável VITE_OPENWEATHER_API_KEY no arquivo .env.')
-      setForecast(null)
+      setErro('Chave da API não encontrada. Crie a variável VITE_OPENWEATHER_API_KEY no arquivo .env.')
+      setPrevisao(null)
       return
     }
 
     try {
-      setLoading(true)
-      setError('')
+      setCarregando(true)
+      setErro('')
 
-      const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(trimmedCity)}&appid=${apiKey}&units=metric&lang=pt_br`
-      const weatherResponse = await fetch(weatherUrl)
-      const weatherData = await weatherResponse.json()
+      const urlClimaCidade = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(nomeCidade)}&appid=${apiKey}&units=metric&lang=pt_br`
+      const respostaClimaCidade = await fetch(urlClimaCidade)
+      const dadosClimaCidade = await respostaClimaCidade.json()
 
-      if (Number(weatherData?.cod) !== 200) {
-        if (Number(weatherData?.cod) === 404) {
+      if (Number(dadosClimaCidade?.cod) !== 200) {
+        if (Number(dadosClimaCidade?.cod) === 404) {
           throw new Error('Cidade não encontrada.')
         }
 
-        if (Number(weatherData?.cod) === 401) {
+        if (Number(dadosClimaCidade?.cod) === 401) {
           throw new Error('API key inválida ou ainda não ativada. Aguarde alguns minutos e tente de novo.')
         }
 
-        throw new Error(weatherData?.message || 'Erro ao buscar dados da cidade.')
+        throw new Error(dadosClimaCidade?.message || 'Erro ao buscar dados da cidade.')
       }
 
-      const latitude = weatherData?.coord?.lat
-      const longitude = weatherData?.coord?.lon
+      const latitude = dadosClimaCidade?.coord?.lat
+      const longitude = dadosClimaCidade?.coord?.lon
 
       if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
         throw new Error('Não foi possível localizar as coordenadas da cidade.')
       }
 
-      const dailyUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto&forecast_days=${resolvedDays}`
-      const dailyResponse = await fetch(dailyUrl)
-      const dailyData = await dailyResponse.json()
+      const urlPrevisaoDiaria = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto&forecast_days=${diasResolvidos}`
+      const respostaPrevisaoDiaria = await fetch(urlPrevisaoDiaria)
+      const dadosPrevisaoDiaria = await respostaPrevisaoDiaria.json()
 
-      if (!dailyResponse.ok) {
+      if (!respostaPrevisaoDiaria.ok) {
         throw new Error('Erro ao buscar previsão diária.')
       }
 
-      const time = dailyData?.daily?.time
-      const tempMax = dailyData?.daily?.temperature_2m_max
-      const tempMin = dailyData?.daily?.temperature_2m_min
-      const rainMax = dailyData?.daily?.precipitation_probability_max
+      const datas = dadosPrevisaoDiaria?.daily?.time
+      const tempMax = dadosPrevisaoDiaria?.daily?.temperature_2m_max
+      const tempMin = dadosPrevisaoDiaria?.daily?.temperature_2m_min
+      const chuvaMax = dadosPrevisaoDiaria?.daily?.precipitation_probability_max
 
-      if (!Array.isArray(time) || !Array.isArray(tempMax) || !Array.isArray(tempMin)) {
+      if (!Array.isArray(datas) || !Array.isArray(tempMax) || !Array.isArray(tempMin)) {
         throw new Error('Resposta inesperada da API de previsão.')
       }
 
-      const items = time.map((date, index) => ({
+      const itens = datas.map((date, index) => ({
         date,
         tempMax: Number.isFinite(Number(tempMax[index])) ? Math.round(Number(tempMax[index])) : null,
         tempMin: Number.isFinite(Number(tempMin[index])) ? Math.round(Number(tempMin[index])) : null,
-        rainChanceMax: Array.isArray(rainMax) && Number.isFinite(Number(rainMax[index])) ? Math.round(Number(rainMax[index])) : null,
+        rainChanceMax:
+          Array.isArray(chuvaMax) && Number.isFinite(Number(chuvaMax[index])) ? Math.round(Number(chuvaMax[index])) : null,
       }))
 
-      setForecast({
-        cityName: weatherData.name,
-        country: weatherData.sys?.country,
-        items,
+      setPrevisao({
+        cityName: dadosClimaCidade.name,
+        country: dadosClimaCidade.sys?.country,
+        items: itens,
       })
     } catch (requestError) {
-      setForecast(null)
-      setError(requestError.message || 'Ocorreu um erro inesperado.')
+      setPrevisao(null)
+      setErro(requestError.message || 'Ocorreu um erro inesperado.')
     } finally {
-      setLoading(false)
+      setCarregando(false)
     }
   }
 
@@ -111,36 +112,36 @@ export default function ForecastPage() {
     <main className="weather-app">
       <h1>Previsão</h1>
 
-      <form onSubmit={handleSearch} className="weather-form">
+      <form onSubmit={buscarPrevisao} className="weather-form">
         <input
           type="text"
-          value={city}
-          onChange={(event) => setCity(event.target.value)}
+          value={cidade}
+          onChange={(event) => setCidade(event.target.value)}
           placeholder="Digite uma cidade"
         />
 
-        <select value={days} onChange={(event) => setDays(event.target.value)} aria-label="Quantidade de dias">
+        <select value={dias} onChange={(event) => setDias(event.target.value)} aria-label="Quantidade de dias">
           <option value={7}>Próximos 7 dias</option>
           <option value={16}>Próximos 16 dias</option>
         </select>
 
-        <button type="submit" disabled={loading}>
-          {loading ? 'Buscando...' : 'Buscar'}
+        <button type="submit" disabled={carregando}>
+          {carregando ? 'Buscando...' : 'Buscar'}
         </button>
       </form>
 
-      {error && <p className="error">{error}</p>}
+      {erro && <p className="error">{erro}</p>}
 
-      {forecast && (
+      {previsao && (
         <section className="forecast">
           <h2>
-            {forecast.cityName}, {forecast.country}
+            {previsao.cityName}, {previsao.country}
           </h2>
 
           <ul className="forecast-list">
-            {forecast.items.map((item) => (
+            {previsao.items.map((item) => (
               <li key={item.date} className="forecast-item">
-                <span className="forecast-date">{formatDayLabel(item.date)}</span>
+                <span className="forecast-date">{formatarDia(item.date)}</span>
                 <span className="forecast-temps">
                   <strong>{item.tempMax === null ? '--' : `${item.tempMax}°`}</strong>
                   <span className="forecast-sep">/</span>
