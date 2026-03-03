@@ -28,7 +28,7 @@ function obterTemaClima(condicaoPrincipal, chanceMaxChuva) {
 }
 
 export default function TelaClima() {
-  const [cidade, setCidade] = useState('São Paulo')
+  const [cidade, setCidade] = useState('')
   const [clima, setClima] = useState(null)
   const [carregando, setCarregando] = useState(false)
   const [erro, setErro] = useState('')

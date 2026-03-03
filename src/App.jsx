@@ -2,11 +2,11 @@ import { NavLink, Navigate, Route, Routes } from 'react-router-dom'
 import './App.css'
 
 // Pages (telas) do app:
-// - TelaClima: tela principal (Home) para consultar o clima atual e chance de chuva por hora.
-// - PrevProximosDias: tela de previsão diária (ex.: próximos 7/16 dias) para a cidade pesquisada.
 // - TelaSobre: tela informativa explicando o projeto, APIs usadas e rotas.
 import TelaSobre from './pages/AboutPage.jsx'
+// - PrevProximosDias: tela de previsão dos próximos dias da cidade.
 import PrevProximosDias from './pages/ForecastPage.jsx'
+// - TelaClima padrão do app
 import TelaClima from './pages/WeatherPage.jsx'
 
 export default function App() {
@@ -28,13 +28,14 @@ export default function App() {
       </nav>
 
       <Routes>
-        {/* / = Home (consulta de clima) */}
+        
+        {/* Tela padrão do sistema */}
         <Route path="/" element={<TelaClima />} />
 
-        {/* /previsao = Previsão diária */}
+        {/* Rota tela previsão dos próximos dias */}
         <Route path="/previsao" element={<PrevProximosDias />} />
 
-        {/* /sobre = Informações do projeto */}
+        {/* Informações do sistema */}
         <Route path="/sobre" element={<TelaSobre />} />
 
         {/* Qualquer rota desconhecida volta para a Home */}

@@ -5,7 +5,7 @@ export default function TelaSobre() {
 
       <section className="about">
         <p>
-          Este projeto é um app React (SPA) que consulta dados de clima de uma cidade e exibe as informações de forma
+          Este projeto é um app React que consulta dados de clima de uma cidade e exibe as informações de forma
           simples.
         </p>
 

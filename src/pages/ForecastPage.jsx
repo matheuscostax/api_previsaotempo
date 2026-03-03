@@ -10,20 +10,18 @@ function formatarDia(isoDate) {
 }
 
 export default function PrevProximosDias() {
-  const [cidade, setCidade] = useState('São Paulo')
+  const [cidade, setCidade] = useState('')
   const [dias, setDias] = useState(7)
   const [previsao, setPrevisao] = useState(null)
   const [carregando, setCarregando] = useState(false)
   const [erro, setErro] = useState('')
 
   const diasResolvidos = useMemo(() => {
-    // Open-Meteo (endpoint gratuito) normalmente oferece até 16 dias de previsão.
-    // Mantendo 7 como padrão; se o usuário pedir 30, a gente limita ao máximo suportado.
     const diasNumericos = Number(dias)
     if (!Number.isFinite(diasNumericos)) return 7
     return Math.min(Math.max(Math.trunc(diasNumericos), 1), 16)
   }, [dias])
-
+// Procura a previsão na API usando os dados da cidade.
   async function buscarPrevisao(event) {
     event.preventDefault()
 
@@ -152,9 +150,6 @@ export default function PrevProximosDias() {
             ))}
           </ul>
 
-          <p className="forecast-hint">
-            A API usada nesta tela (Open‑Meteo) fornece previsão diária gratuita até 16 dias.
-          </p>
         </section>
       )}
     </main>
