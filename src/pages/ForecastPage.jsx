@@ -16,15 +16,15 @@ export default function PrevProximosDias() {
   const [carregando, setCarregando] = useState(false)
   const [erro, setErro] = useState('')
 
+// Calcula e valida o número de dias para a previsão, garantindo limites.
   const diasResolvidos = useMemo(() => {
     const diasNumericos = Number(dias)
     if (!Number.isFinite(diasNumericos)) return 7
     return Math.min(Math.max(Math.trunc(diasNumericos), 1), 16)
   }, [dias])
-// Procura a previsão na API usando os dados da cidade.
+// Procura a previsão na API usando os dados da cidade e faz a validação das entradas, além de buscar as coordenadas da API.
   async function buscarPrevisao(event) {
     event.preventDefault()
-
     const nomeCidade = cidade.trim()
 
     if (!nomeCidade) {
@@ -32,9 +32,7 @@ export default function PrevProximosDias() {
       setPrevisao(null)
       return
     }
-
     const apiKey = (import.meta.env.VITE_OPENWEATHER_API_KEY || '').trim()
-
     if (!apiKey) {
       setErro('Chave da API não encontrada. Crie a variável VITE_OPENWEATHER_API_KEY no arquivo .env.')
       setPrevisao(null)
