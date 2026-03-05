@@ -9,8 +9,7 @@ function obterPartesDataCidade(unixSeconds, timezoneOffsetSeconds) {
     hour: cityDate.getUTCHours(),
   }
 }
-
-// Define tema visual com base na condição climática principal e na chance de chuva nas próximas horas
+// Define tema visual com base na condição climática principal e na chance de chuva nas próximas horas do dia em questão, priorizando condições de chuva.
 function obterTemaClima(condicaoPrincipal, chanceMaxChuva) {
   const condition = String(condicaoPrincipal || '').toLowerCase()
 
@@ -33,6 +32,7 @@ export default function TelaClima() {
   const [carregando, setCarregando] = useState(false)
   const [erro, setErro] = useState('')
 
+//Função assíncrona que valida entrada, busca dados via OpenWeather e previsão horária via Open-Meteo.
   async function buscarClima(event) {
     event.preventDefault()
 
@@ -44,7 +44,7 @@ export default function TelaClima() {
       return
     }
 
-    // pega a chave da api no arquivo .env
+    // Busca a chave da api no arquivo .env
     const apiKey = (import.meta.env.VITE_OPENWEATHER_API_KEY || '').trim()
 
     if (!apiKey) {
