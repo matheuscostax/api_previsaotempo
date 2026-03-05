@@ -22,13 +22,6 @@ export default function TelaSobre() {
           <li>OpenWeather: clima atual</li>
           <li>Open-Meteo: probabilidade de precipitação por hora</li>
         </ul>
-
-        <h2>Rotas</h2>
-        <ul>
-          <li>/ (Clima)</li>
-          <li>/previsao (Previsão diária)</li>
-          <li>/sobre (Esta página)</li>
-        </ul>
       </section>
     </main>
   )
